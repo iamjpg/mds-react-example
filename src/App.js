@@ -14,8 +14,9 @@ function App() {
     const initialData = await fetch(
       `https://anapioficeandfire.com/api/houses?page=${page}&pageSize=${pageSize}`
     );
-    const pages = initialData.headers.get('link').match(/page\=[0-9]+/g);
+    const pages = initialData.headers.get('link').match(/page=[0-9]+/g);
     const lastPage = +/[0-9]+/.exec(pages[pages.length - 1])[0];
+    console.log(lastPage);
     setLastPage(lastPage === page);
     const initialJson = await initialData.json();
     setData(initialJson);
@@ -46,7 +47,7 @@ function App() {
   useEffect(() => {
     getData(page, pageSize);
     setListners();
-  }, []);
+  });
 
   return (
     <>
@@ -59,7 +60,7 @@ function App() {
           page={page}
           rowsPerPageOptions={[5, 10, 20, 50]}
           rowsPerPage={pageSize}
-          disablePagination={lastPage}
+          disableNextPage={lastPage}
           rows={data}
           columns={[
             { property: 'name', heading: 'Name', sortable: false },
