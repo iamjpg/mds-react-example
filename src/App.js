@@ -53,8 +53,8 @@ function App() {
 
   return (
     <>
-      <main>
-        <h1>Listings in 98115</h1>
+      <main className='mds'>
+        <h3>Game of Thrones Houses</h3>
         <br />
         <MxTable
           serverPaginate
