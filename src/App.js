@@ -74,12 +74,19 @@ function App() {
         <h3>Game of Thrones Houses</h3>
         <br />
         <MxTable
+          // Server side pagination
           serverPaginate
+          // Table Reference
           ref={tableRef}
+          // Current Page
           page={page}
+          // Per Page Options Dropdown
           rowsPerPageOptions={[5, 10, 20, 50]}
+          // Rows per page to show
           rowsPerPage={pageSize}
+          // Disable next page if is last page.
           disableNextPage={isLastPage}
+          // Rows is the data array returned from the API.
           rows={data}
           // Properties are properties returned from the API. Headings are the label name for the column.
           columns={[
@@ -91,6 +98,7 @@ function App() {
               sortable: false,
             },
           ]}
+          // Total Rows gives you the `n - n of n` text.
           totalRows={totalPages}
         />
       </main>
