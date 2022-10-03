@@ -21,8 +21,13 @@ function App() {
       `https://anapioficeandfire.com/api/houses?page=${page}&pageSize=${pageSize}`
     );
     const initialJson = await initialData.json();
+
+    // With this API we need to inspect the header to glean the total pages available in the API.
+    // Remember, this is specific to the API the example is working with.
     const pages = initialData.headers.get('link').match(/page=[0-9]+/g);
     const lastPage = +/[0-9]+/.exec(pages[pages.length - 1])[0];
+
+    // Set Data
     setTotalPages(lastPage);
     setIsLastPage(lastPage === page);
     setData(initialJson);
