@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkmds_react_test=self.webpackChunkmds_react_test||[]).push([[33],{9033:function(t,e,n){n.r(e),n.d(e,{mx_tab_content:function(){return r}});var s=n(5671),i=n(3144),u=n(5953),r=function(){function t(e){(0,s.Z)(this,t),(0,u.r)(this,e)}return(0,i.Z)(t,[{key:"isActiveTab",get:function(){return this.value>=0&&this.index===this.value}},{key:"render",value:function(){return(0,u.h)(u.H,{class:this.isActiveTab?"":"hidden",role:"tabpanel"},(0,u.h)("slot",null))}}]),t}()}}]);
+//# sourceMappingURL=33.376e6cfc.chunk.js.map
