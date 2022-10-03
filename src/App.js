@@ -5,16 +5,19 @@ import './App.css';
 
 function App() {
   const tableRef = useRef(null);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [lastPage, setLastPage] = useState(false);
   const [data, setData] = useState([]);
 
   const getData = async (page, pageSize) => {
     const initialData = await fetch(
       `https://anapioficeandfire.com/api/houses?page=${page}&pageSize=${pageSize}`
     );
+    const pages = initialData.headers.get('link').match(/page\=[0-9]+/g);
+    const lastPage = +/[0-9]+/.exec(pages[pages.length - 1])[0];
+    setLastPage(lastPage === page);
     const initialJson = await initialData.json();
-    console.log(initialJson);
     setData(initialJson);
   };
 
@@ -29,7 +32,6 @@ function App() {
 
   const handlePagination = debounce(
     ({ page, rowsPerPage }) => {
-      console.log(page, rowsPerPage);
       setPageSize(rowsPerPage);
       setPage(page);
       getData(page, rowsPerPage);
@@ -57,7 +59,7 @@ function App() {
           page={page}
           rowsPerPageOptions={[5, 10, 20, 50]}
           rowsPerPage={pageSize}
-          disablePagination={false}
+          disablePagination={lastPage}
           rows={data}
           columns={[
             { property: 'name', heading: 'Name', sortable: false },
