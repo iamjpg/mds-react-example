@@ -5,13 +5,17 @@ import debounce from 'lodash.debounce';
 import './App.css';
 
 function App() {
+  // Reference for the table. Important for the mxPageChange listener.
   const tableRef = useRef(null);
+
+  // Using useState but this can clearly be useReducer or Redux or Zustand or whatever.
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [isLastPage, setIsLastPage] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [data, setData] = useState([]);
 
+  // Simple retrieve method to return data from API and setting state.
   const getData = async (page, pageSize) => {
     const initialData = await fetch(
       `https://anapioficeandfire.com/api/houses?page=${page}&pageSize=${pageSize}`
@@ -24,6 +28,9 @@ function App() {
     setData(initialJson);
   };
 
+  // mxPageChange listener for pagination events.
+  // This returns a `detail` object on the event.
+  // That detail has the expected page number and rowsPerPage with it.
   const setListners = () => {
     if (tableRef && tableRef.current) {
       tableRef.current.addEventListener('mxPageChange', (e) => {
@@ -33,6 +40,9 @@ function App() {
     }
   };
 
+  // Taking the data from the listener above, we get new data
+  // based on new pagination params passed from pagination event.
+  // I'm using debounce here to ensure I'm not making multiple calls.
   const handlePagination = debounce(
     ({ page, rowsPerPage }) => {
       setPageSize(rowsPerPage);
@@ -46,6 +56,8 @@ function App() {
     }
   );
 
+  // This could be useEffect but I like being explicit
+  // in this case and the react-use library is nice.
   useEffectOnce(() => {
     getData(page, pageSize);
     setListners();
@@ -64,6 +76,7 @@ function App() {
           rowsPerPage={pageSize}
           disableNextPage={isLastPage}
           rows={data}
+          // Properties are properties returned from the API. Headings are the label name for the column.
           columns={[
             { property: 'name', heading: 'Name', sortable: false },
             { property: 'region', heading: 'Region', sortable: false },
