@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useEffectOnce } from 'react-use';
 import { MxTable } from '@moxiworks/mds/react';
 import debounce from 'lodash.debounce';
 import './App.css';
@@ -7,18 +8,19 @@ function App() {
   const tableRef = useRef(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [lastPage, setLastPage] = useState(false);
+  const [isLastPage, setIsLastPage] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
   const [data, setData] = useState([]);
 
   const getData = async (page, pageSize) => {
     const initialData = await fetch(
       `https://anapioficeandfire.com/api/houses?page=${page}&pageSize=${pageSize}`
     );
+    const initialJson = await initialData.json();
     const pages = initialData.headers.get('link').match(/page=[0-9]+/g);
     const lastPage = +/[0-9]+/.exec(pages[pages.length - 1])[0];
-    console.log(lastPage);
-    setLastPage(lastPage === page);
-    const initialJson = await initialData.json();
+    setTotalPages(lastPage);
+    setIsLastPage(lastPage === page);
     setData(initialJson);
   };
 
@@ -44,7 +46,7 @@ function App() {
     }
   );
 
-  useEffect(() => {
+  useEffectOnce(() => {
     getData(page, pageSize);
     setListners();
   });
@@ -60,7 +62,7 @@ function App() {
           page={page}
           rowsPerPageOptions={[5, 10, 20, 50]}
           rowsPerPage={pageSize}
-          disableNextPage={lastPage}
+          disableNextPage={isLastPage}
           rows={data}
           columns={[
             { property: 'name', heading: 'Name', sortable: false },
@@ -71,6 +73,7 @@ function App() {
               sortable: false,
             },
           ]}
+          totalRows={totalPages}
         />
       </main>
     </>
